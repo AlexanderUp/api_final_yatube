@@ -1,5 +1,4 @@
 import os
-
 from datetime import timedelta
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -17,6 +16,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_filters',
     'rest_framework',
     'djoser',
     'api.apps.ApiConfig',
@@ -108,7 +108,7 @@ SIMPLE_JWT = {
 }
 
 LOGGING = {
-    'version': 1, 
+    'version': 1,
     'disable_existing_loggers': False,
     'handlers': {
         'console': {
