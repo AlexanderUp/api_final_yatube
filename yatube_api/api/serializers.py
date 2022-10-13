@@ -9,6 +9,11 @@ from posts.models import Comment, Follow, Group, Post, User  # isort:skip
 
 
 class Base64ImageField(serializers.ImageField):
+    """
+    Комментарий "Этот сериалайзер не обязательный." не ясен.
+    Строка напрямую не может быть обработана моделью - требуется файл.
+    К слову, формат входной строки для поля изображения не оговорен.
+    """
     def to_internal_value(self, data):
         if isinstance(data, str) and data.startswith("data:image"):
             format, imgstr = data.split(";base64,")
@@ -61,7 +66,7 @@ class FollowSerializer(serializers.ModelSerializer):
             UniqueTogetherValidator(
                 queryset=Follow.objects.all(),
                 fields=("user", "following"),
-                message="You can not follow yourself."
+                message="You have been following this person already."
             ),
         ]
 

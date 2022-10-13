@@ -1,12 +1,12 @@
 from django.shortcuts import get_object_or_404
-from rest_framework import filters, viewsets
+from rest_framework import filters, generics, viewsets
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
 from .permissions import OwnerOrReadOnly
 from .serializers import (CommentSerializer, FollowSerializer, GroupSerializer,
                           PostSerializer)
 
-from posts.models import Follow, Group, Post  # isort:skip
+from posts.models import Group, Post  # isort:skip
 
 
 class PostViewSet(viewsets.ModelViewSet):
@@ -39,12 +39,13 @@ class CommentViewSet(viewsets.ModelViewSet):
         )
 
 
-class FollowViewSet(viewsets.ModelViewSet):
+class FollowListCreateAPIView(generics.ListCreateAPIView):
     serializer_class = FollowSerializer
     filter_backends = (filters.SearchFilter,)
     search_fields = ("following__username",)
 
     def get_queryset(self):
-        return (Follow.objects
-                      .filter(user=self.request.user)
-                      .select_related("user", "following"))
+        return (self.request
+                    .user
+                    .follower  # type: ignore
+                    .select_related("user", "following").all())
